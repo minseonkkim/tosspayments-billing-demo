@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/vite-env.d.ts","./src/pages/billingcancelpage.tsx","./src/pages/billingfailpage.tsx","./src/pages/billingsuccesspage.tsx","./src/pages/checkoutpage.tsx","./src/pages/paymentfailpage.tsx","./src/pages/paymentsuccesspage.tsx"],"version":"5.9.3"}
