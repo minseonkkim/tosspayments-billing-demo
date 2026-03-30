@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { confirmBilling } from "../api";
 
 export default function BillingSuccessPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("카드를 등록하는 중입니다.");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -25,10 +24,11 @@ export default function BillingSuccessPage() {
 
       try {
         await confirmBilling(customerKey, authKey);
-        setMessage("카드 등록이 완료되었습니다. 결제 화면으로 돌아갑니다.");
-        window.setTimeout(() => {
-          navigate("/", { replace: true });
-        }, 1200);
+        const nextParams = new URLSearchParams({
+          toast: "billing-success",
+          message: "카드 등록이 완료되었습니다.",
+        });
+        navigate(`/?${nextParams.toString()}`, { replace: true });
       } catch (confirmError) {
         setError(confirmError instanceof Error ? confirmError.message : "빌링키 발급에 실패했습니다.");
       }
@@ -39,12 +39,9 @@ export default function BillingSuccessPage() {
 
   return (
     <main className="result-shell">
-      <section className="result-card">
-        <h1>카드 등록 결과</h1>
-        {error ? <p className="feedback error">{error}</p> : <p>{message}</p>}
-        <Link to="/" className="inline-link">
-          결제 화면으로 이동
-        </Link>
+      <section className="result-card billing-success-card">
+        <h1>카드 등록 중</h1>
+        {error ? <p className="feedback error">{error}</p> : <p>결제 화면으로 돌아가는 중입니다.</p>}
       </section>
     </main>
   );

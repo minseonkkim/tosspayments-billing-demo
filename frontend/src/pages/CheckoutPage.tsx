@@ -96,11 +96,17 @@ export default function CheckoutPage() {
   const amount = session?.plan.amount ?? 0;
 
   useEffect(() => {
-    if (searchParams.get("toast") !== "billing-canceled") {
+    const toastType = searchParams.get("toast");
+    if (!toastType) {
       return;
     }
 
-    setToastMessage(searchParams.get("message") ?? "카드 등록이 취소되었습니다.");
+    setToastMessage(
+      searchParams.get("message") ??
+        (toastType === "billing-success"
+          ? "카드 등록이 완료되었습니다."
+          : "카드 등록이 취소되었습니다."),
+    );
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 

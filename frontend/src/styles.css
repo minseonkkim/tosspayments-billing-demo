@@ -54,6 +54,24 @@ input {
   padding: 40px 32px;
 }
 
+.billing-success-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.billing-success-card .feedback {
+  width: min(420px, 100%);
+  margin-top: 0;
+}
+
+.billing-success-card p {
+  margin: 0;
+}
+
 .success-card {
   display: flex;
   flex-direction: column;
