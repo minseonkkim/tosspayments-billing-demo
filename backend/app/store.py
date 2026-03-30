@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.schemas import BillingMethodSummary, PaymentSummary
+from app.schemas import BillingMethodSummary, PaymentSummary, SubscriptionSummary
 
 
 def format_card_number(card_number: str | None) -> str | None:
@@ -89,4 +89,43 @@ class PaymentStore:
     def save_payment(self, payment: PaymentSummary) -> None:
         data = self._read()
         data[payment.order_id] = payment.model_dump()
+        self._write(data)
+
+
+class SubscriptionStore:
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if not self.path.exists():
+            self.path.write_text("{}", encoding="utf-8")
+
+    def _read(self) -> dict[str, dict]:
+        raw = self.path.read_text(encoding="utf-8").strip()
+        if not raw:
+            return {}
+        return json.loads(raw)
+
+    def _write(self, data: dict[str, dict]) -> None:
+        self.path.write_text(
+            json.dumps(data, ensure_ascii=True, indent=2),
+            encoding="utf-8",
+        )
+
+    def list_subscriptions(self, customer_key: str | None = None) -> list[SubscriptionSummary]:
+        data = self._read()
+        items = [SubscriptionSummary(**item) for item in data.values()]
+        if customer_key is None:
+            return items
+        return [item for item in items if item.customer_key == customer_key]
+
+    def get_subscription(self, billing_key: str) -> SubscriptionSummary | None:
+        data = self._read()
+        item = data.get(billing_key)
+        if not item:
+            return None
+        return SubscriptionSummary(**item)
+
+    def save_subscription(self, subscription: SubscriptionSummary) -> None:
+        data = self._read()
+        data[subscription.billing_key] = subscription.model_dump()
         self._write(data)

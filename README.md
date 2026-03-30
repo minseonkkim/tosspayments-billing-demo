@@ -22,6 +22,8 @@ FRONTEND_FAIL_URL=http://localhost:5173/billing/fail
 BACKEND_CORS_ORIGINS=http://localhost:5173
 STORE_PATH=./data/billing_store.json
 PAYMENT_STORE_PATH=./data/payment_store.json
+SUBSCRIPTION_STORE_PATH=./data/subscription_store.json
+RECURRING_POLL_INTERVAL_SECONDS=60
 TOSS_TEST_CODE=
 ```
 
@@ -61,12 +63,14 @@ npm run dev
 2. `카드 추가` 버튼으로 토스 Billing 등록창을 엽니다.
 3. 성공 리다이렉트에서 `authKey`, `customerKey`를 받아 백엔드가 빌링키를 발급하고 저장합니다.
 4. 저장된 카드 중 하나를 선택하고 `결제하기`를 누르면 백엔드가 빌링키 자동결제 승인 API를 호출합니다.
+5. 결제 성공 후 백엔드는 구독 정보를 저장하고, 이후 만기일마다 백그라운드 루프가 자동 재청구를 시도합니다.
 
 ## 주의사항
 
 - 토스 Billing은 계약 및 리스크 심사 후 사용할 수 있습니다.
 - 현재 저장소 예제는 인증/회원 시스템 없이 데모용 고객 키를 사용합니다. 실제 서비스에서는 로그인 사용자 기준의 난수형 `customerKey`를 서버에서 생성하고 보관해야 합니다.
 - 저장된 결제수단은 `backend/data/billing_store.json`, 결제 완료 화면용 요약 정보는 `backend/data/payment_store.json`에 파일 형태로 보관됩니다. 운영 환경에서는 DB로 교체하세요.
+- 자동 재청구 대상 구독은 `backend/data/subscription_store.json`에 저장됩니다. 현재 예제는 서버 프로세스 내부 루프로 주기 실행되므로, 운영 환경에서는 별도 워커/크론/큐 기반 배치로 분리하는 편이 안전합니다.
 - 실제 서비스에서 중복 카드 등록을 막으려면 서버 영속 저장소 기준으로 같은 카드 여부를 판별해야 하며, 운영 환경에서는 `billingKey`가 아닌 카드 식별용 값을 DB에 저장하고 `customerKey` 기준 고유 제약으로 관리하는 방식이 적절합니다.
 
 ## 결제 실패 테스트

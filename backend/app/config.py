@@ -23,6 +23,14 @@ class Settings(BaseSettings):
         default=Path("./data/payment_store.json"),
         alias="PAYMENT_STORE_PATH",
     )
+    subscription_store_path: Path = Field(
+        default=Path("./data/subscription_store.json"),
+        alias="SUBSCRIPTION_STORE_PATH",
+    )
+    recurring_poll_interval_seconds: int = Field(
+        default=60,
+        alias="RECURRING_POLL_INTERVAL_SECONDS",
+    )
     toss_test_code: str | None = Field(default=None, alias="TOSS_TEST_CODE")
 
     model_config = SettingsConfigDict(
