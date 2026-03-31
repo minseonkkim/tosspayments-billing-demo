@@ -35,7 +35,7 @@ export default function BillingFailPage() {
     rawQuery: Object.fromEntries(searchParams.entries()),
   });
 
-  if (code === "PAY_PROCESS_CANCELED" || code === "USER_CANCEL") {
+  if (code === "USER_CANCEL") {
     const nextParams = new URLSearchParams();
     if (code) {
       nextParams.set("code", code);

@@ -169,7 +169,11 @@ export default function CheckoutPage() {
       });
     } catch (sdkError) {
       if (isBillingCancelError(sdkError)) {
-        setToastMessage("카드 등록이 취소되었습니다.");
+        const nextParams = new URLSearchParams({
+          code: "USER_CANCEL",
+          message: "카드 추가가 취소되어 결제가 진행되지 않았습니다.",
+        });
+        navigate(`/billing/cancel?${nextParams.toString()}`);
         return;
       }
 
